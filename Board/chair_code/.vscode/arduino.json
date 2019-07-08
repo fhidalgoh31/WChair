@@ -1,0 +1,6 @@
+{
+    "board": "arduino:avr:uno",
+    "output": "../build",
+    "sketch": "chair_code.ino",
+    "port": "COM17"
+}

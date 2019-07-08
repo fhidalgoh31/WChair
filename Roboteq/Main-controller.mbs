@@ -1,0 +1,94 @@
+'TX joystick
+#define T_CLOCK 10
+#define brake_delay_on 300 'ms
+#define brake_delay_off 300 'ms
+#define ramp_up 10000    ' *100/ramp_up   -----  speed= speed + abs(joy_x)*100/ramp_up
+#define ramp_down 10000    '100/ramp_down joy_x divided by this value
+#define tolerance 110      '105 -> 5%
+#define ramp_break 1   'in ms
+ini:
+
+speed = 0
+motor_running=0
+Print("Test 2\n")
+wait(1000)
+
+top: 
+joy_x=getvalue(_ANAINC,2)
+joy_y=getvalue(_ANAINC,1)
+DO1=getvalue(_DO,1)
+DO2=getvalue(_DO,2)
+Print("_x v: ",joy_x, "\t","y_v: ",joy_y,"\t","mode:", mode,"\n")
+'wait(1000)
+'goto top
+mode=DO1 + DO2
+'Print("Joy_x Value: ",joy_x, "\t")
+setcommand(_VAR, 1, joy_x)  'CAN BUS TX to  
+setcommand(_VAR, 2, joy_y)   ' CAN BUS TX to
+setcommand(_VAR, 3, mode)   ' CAN BUS TX to
+'Forward
+'motor_running: 0 Not running
+'               1 moving
+'               2 Apply brake
+
+Print("mode: ",mode,"\t m_r: ",motor_running,"\t")
+
+if mode=0 or mode=128 then
+	If joy_x < -100 OR joy_x > 100 Then   'Dead_band check
+	    setcommand(_DSET,8)  ' break off
+		Print(speed,"NO Brake!\t")
+		if motor_running=0     ' motor not running
+			Print("First Brake!\t")
+			SetTimerCount(1,brake_delay_off)
+			motor_running=1    ' motor start running
+		end if
+		if  GetTimerState(1) then	'safe time elapsed
+			' motor_running=1    'not needed?
+			if (joy_x>100 AND (speed*tolerance/100<joy_x OR speed>joy_x*tolerance/100)) OR (joy_x<100 AND (speed*tolerance/100>joy_x OR speed<joy_x*tolerance/100))
+				if speed<joy_x then
+					speed= speed + abs(joy_x)*100/ramp_up   ' ramp up
+					print("ramp up\t")
+				else 
+						speed= speed - abs(joy_x)*100/ramp_down   ' ramp up
+						print("ramp down\t")
+				end if
+			end if
+	
+			setcommand(_G, 1, speed)
+			Print("speed: ",speed, "joy_x: ",joy_x, "\t")
+			motor_amps= getvalue(_MOTAMPS,1)
+			print("motor_amps: ",motor_amps,"\t")
+		end if
+	elseif not(getvalue(_DO,8)) Then                                 'Turn motors off brake on
+			Print("BREAKING RAMP DOWN! speed: ",speed, "\t")
+			if speed>ramp_break*2 then
+				speed= speed - ramp_break
+				elseif speed<-ramp_break*2 then
+					speed = speed + ramp_break
+					else
+						speed = 0
+			end if
+			setcommand(_G, 1, speed)
+			motor_amps= getvalue(_MOTAMPS,1)
+			print("BREAKING! motor_amps: ",motor_amps,"\t")
+			if speed < ramp_break*2 and speed>-ramp_break*2 and motor_amps > -1 and motor_amps < 1 and motor_running=1 then
+				motor_running=2
+				print("motor_amps menor que 1\t")
+				SetTimerCount(1,brake_delay_on)
+				speed=0
+			end if
+			if motor_running=2 AND GetTimerState(1) then
+					motor_amps= getvalue(_MOTAMPS,1)
+					if speed < ramp_break*2 and speed>-ramp_break*2 and motor_amps > -1 and motor_amps < 1 and motor_running=2 then
+						setcommand(_DRES,8)   'set break
+						Print(speed,"  Brake!\t")
+						motor_running=0
+						Print("FINISH BRAKING")
+					end if
+			end if
+	End If
+End if
+'Print("Rx: ",M1,"\n")
+ Print("\n")
+wait(T_CLOCK)   ' was 10 for release
+goto top

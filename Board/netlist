@@ -1,0 +1,150 @@
+Netlist
+
+Exported from wchair.brd at 8/04/2019 6:03 PM
+
+EAGLE Version 9.2.2 Copyright (c) 1988-2018 Autodesk, Inc.
+
+Net      Part     Pad
+
+C1+      C1       1
+         U6       1
+
+C1-      C1       2
+         U6       3
+
+C2+      C2       1
+         U6       4
+
+C2-      C2       2
+         U6       5
+
+GND      AVRISP   6
+         C20      -
+         C25      2
+         C26      2
+         C27      2
+         C3       2
+         C31      -
+         C33      1
+         C4       2
+         C5       2
+         IC3      21
+         IC3      3
+         IC3      5
+         R1       2
+         R10      1
+         R12      2
+         R2       2
+         R3       1
+         R4       2
+         R8       1
+         R9       2
+         S1       1
+         S1       2
+         S10      4
+         U4       8
+         U6       15
+         U7       3
+
+MISO     AVRISP   1
+         IC3      16
+         R18      2
+
+MOSI     AVRISP   4
+         IC3      15
+         R19      2
+
+N$1      R19      1
+
+N$2      R18      1
+
+N$3      R17      1
+
+N$4      LED14    C
+         R4       1
+
+N$5      LED11    C
+         R1       1
+
+N$6      LED16    C
+         R9       1
+
+N$7      LED12    C
+         R2       1
+
+N$8      R11      2
+         S1       3
+
+N$9      LED13    C
+         R3       2
+
+N$10     LED15    C
+         R8       2
+
+N$11     LED17    C
+         R10      2
+
+N$23     JP9      3
+         R6       1
+
+N$24     JP9      1
+         R7       1
+
+N$35     8MHZ     2
+         C25      1
+         IC3      7
+
+N$36     8MHZ     1
+         C26      1
+         IC3      8
+
+N$37     C27      1
+         IC3      20
+
+R1IN     U6       13
+
+R1OUT    U6       12
+
+RESET    AVRISP   5
+         IC3      29
+         R16      2
+         S10      2
+
+SCK      AVRISP   3
+         IC3      17
+         R17      2
+
+SCL      IC3      28
+         R7       2
+
+SDA      IC3      27
+         R6       2
+
+T1IN     U6       11
+
+T1OUT    U6       14
+
+V+       C3       1
+         U4       16
+         U6       2
+
+V-       C4       1
+         U6       6
+
+VCC      AVRISP   2
+         C20      +
+         C31      +
+         C33      2
+         C5       1
+         IC3      18
+         IC3      4
+         IC3      6
+         JP9      2
+         R11      1
+         R16      1
+         R5       2
+         U6       16
+
+V_BAT    R12      1
+         R5       1
+

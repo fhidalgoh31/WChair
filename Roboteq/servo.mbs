@@ -1,0 +1,37 @@
+'RX SERVO
+ini:
+dim first_brake as boolean
+first_brake=1
+Print("Test\n")
+wait(1000)
+top: 
+joy_x = getvalue(_VAR, 9)
+joy_y= getvalue(_VAR, 10)
+mode= getvalue(_VAR, 11)
+Print("Rx X: ",joy_x,"\t")
+Print("Rx Y: ",joy_y,"\t")
+Print("mode: ",mode,"\n")
+
+if mode=1 then
+	setcommand(_G, 2, joy_x) 
+elseif mode=0 or mode=128 then
+	setcommand(_G, 1, joy_y) 
+end if	
+'If speed < -100 OR speed > 100 Then
+'    setcommand(_G, 2, 1000) 
+'	first_brake=1
+	'Print(speed,"NO Brake!\n")
+'else
+'	if first_brake
+'		wait(10) 
+'		first_brake=0
+		'Print("First Brake!\n")
+'	end if
+'	setcommand(_G, 2, 0) 
+	'Print(speed,"Brake!\n")
+'End If
+
+wait(1) 
+goto top
+
+

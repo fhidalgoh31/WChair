@@ -1,0 +1,34 @@
+'RX SERVO
+ini:
+
+Print("Legs\n")
+wait(1000)
+top: 
+joy_x = getvalue(_VAR, 9)
+joy_y= getvalue(_VAR, 10)
+mode= getvalue(_VAR, 11)
+Print("Rx X: ",joy_x,"\n")
+Print("Rx Y: ",joy_y,"\n")
+
+if mode=3 then
+	setcommand(_G, 1, joy_x) 
+	setcommand(_G, 2, joy_y)
+end if	
+'If speed < -100 OR speed > 100 Then
+'    setcommand(_G, 2, 1000) 
+'	first_brake=1
+	'Print(speed,"NO Brake!\n")
+'else
+'	if first_brake
+'		wait(10) 
+'		first_brake=0
+		'Print("First Brake!\n")
+'	end if
+'	setcommand(_G, 2, 0) 
+	'Print(speed,"Brake!\n")
+'End If
+
+wait(1) 
+goto top
+
+

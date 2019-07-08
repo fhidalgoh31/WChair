@@ -1,0 +1,71 @@
+Option EXPLICIT
+PRINT ("Roboteq_node_15\n")
+
+'NOTE: battery amps is always positive, motor amps is signed
+
+' ******************************************************************************************************
+'See end of file for version information and change log
+
+DIM i as INTEGER
+DIM NumData as INTEGER
+DIM target as INTEGER
+DIM toRoboteq as INTEGER
+DIM toMaster as INTEGER
+DIM toDisplay as INTEGER
+DIM category as INTEGER
+DIM Value as INTEGER
+DIM Command as INTEGER
+DIM Config as INTEGER
+DIM Config2 as INTEGER
+DIM SendData[8] as INTEGER
+DIM ReceivedData[8] as INTEGER
+DIM NodeLive_id as INTEGER
+DIM ID as INTEGER
+
+'CAN message ID definitions
+toRoboteq = 0b011
+toMaster = 0b101
+toDisplay = 0b111
+Value = 0b01
+Command = 0b00
+Config = 0b10
+Config2 = 0b11
+NodeLive_id=10
+'let Master know that Roboteq is live
+SendData[0] = 3
+SendData[1] = (0x000000FF AND (NOT (SendData[0])))
+FOR i = 1 AndWhile (i <= 20)
+  SetCommand (_CANSEND, 1, NodeLive_id)
+  SetCommand (_CANSEND, 3, SendData[0])
+  SetCommand (_CANSEND, 4, SendData[1])
+  SetCommand (_CANSEND, 2, 2)
+  Wait (5)
+NEXT
+
+MainLoop:
+  GoSub RECEIVE_MESSAGE
+  'GoSub PROCESS_MESSAGE
+
+ Goto MainLoop
+ 
+RECEIVE_MESSAGE:
+  WHILE (GetValue (_CF)>0)
+    ID = GetValue (_CAN, 1)
+	Print("ID: ",ID)
+'extract target, if target = toRoboteq handle confirmation handshake messages or handle incoming messages
+	Target = ID AND 0b111 'target mask
+'probably not necessary, but clear old data out of array
+        FOR i = 0 AndWhile (i <= 7)
+		  ReceivedData[i] = 0
+		NEXT
+'extract data from message
+  	    NumData = GetValue (_CAN, 2)
+	    IF (NumData > 0) THEN
+          FOR i = 0 AndWhile (i <= NumData-1) 'changed from NumData so can't go out-of-range
+	       ReceivedData[i] = GetValue (_CAN, 3+i)
+		   Print("Data[",i,"]:=",ReceivedData[i])
+	      NEXT
+	    END IF
+  END WHILE '(GetValue (_CF)>0)
+RETURN 'RECEIVE_MESSAGE
+
